@@ -1,8 +1,6 @@
 import { createAuthClient } from "better-auth/react";
 
-export const NEON_AUTH_URL =
-  import.meta.env.VITE_NEON_AUTH_URL ||
-  "https://ep-sparkling-mode-b6t98zjh.neonauth.c-2.sa-east-1.aws.neon.tech/neondb/auth";
+export const NEON_AUTH_URL = import.meta.env.VITE_NEON_AUTH_URL || "";
 
 export const authClient = createAuthClient({
   baseURL: NEON_AUTH_URL,
