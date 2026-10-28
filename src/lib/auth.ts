@@ -63,5 +63,8 @@ export function mapAuthErrorMessage(error: any): string {
   if (msg.includes("failed to fetch") || msg.includes("network") || msg.includes("cors")) {
     return "Falha de conexão com o servidor de autenticação. Verifique sua internet.";
   }
+  if (msg.includes("403") || msg.includes("forbidden")) {
+    return "Acesso não autorizado pelo servidor de autenticação (origem não permitida ou credenciais bloqueadas).";
+  }
   return error.message || "Não foi possível concluir a operação. Verifique os dados inseridos.";
 }
