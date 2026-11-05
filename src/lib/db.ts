@@ -585,4 +585,32 @@ export async function fetchPlanosPorPaciente(pacienteId: string): Promise<PlanoA
   }));
 }
 
+/**
+ * Salva um novo plano alimentar para o paciente no Neon DB.
+ */
+export async function createPlanoAlimentar(pacienteId: string, conteudo: any): Promise<PlanoAlimentar> {
+  const rows = await sql`
+    INSERT INTO planos_alimentares (
+      paciente_id,
+      conteudo
+    ) VALUES (
+      ${pacienteId}::uuid,
+      ${JSON.stringify(conteudo)}::jsonb
+    ) RETURNING 
+      id,
+      paciente_id,
+      conteudo,
+      created_at::text as created_at
+  `;
+
+  const row = rows[0];
+  return {
+    id: row.id,
+    paciente_id: row.paciente_id,
+    conteudo: row.conteudo,
+    created_at: row.created_at,
+  };
+}
+
+
 

@@ -13,6 +13,7 @@ import {
   CreateConsultaInput,
 } from "@/lib/db";
 import { formatSafeDate, toInputDateFormat } from "@/lib/utils";
+import { PlanosAlimentaresSection } from "@/components/PlanosAlimentaresSection";
 import {
   ArrowLeft,
   Calendar,
@@ -86,7 +87,6 @@ export const PacientePerfil: React.FC = () => {
   const [paciente, setPaciente] = useState<Paciente | null>(null);
   const [consultas, setConsultas] = useState<Consulta[]>([]);
   const [planos, setPlanos] = useState<PlanoAlimentar[]>([]);
-  const [planoSelecionado, setPlanoSelecionado] = useState<PlanoAlimentar | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -1436,90 +1436,13 @@ export const PacientePerfil: React.FC = () => {
             {/* SEÇÃO 3 — PLANOS ALIMENTARES */}
             {/* ============================================================ */}
             {activeSection === "planos" && (
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-100">
-                  <div>
-                    <h3 className="text-lg font-bold text-slate-900">Planos Alimentares</h3>
-                    <p className="text-xs text-slate-500">
-                      Crie planos personalizados com IA ou consulte os históricos gerados para o paciente
-                    </p>
-                  </div>
-
-                  {/* Botão Gerar Plano Alimentar visível conforme requisito do Prompt 5 */}
-                  <button
-                    type="button"
-                    onClick={() => alert("A geração com IA será ativada no próximo prompt!")}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 shadow-md shadow-emerald-600/20 transition-all cursor-pointer self-start sm:self-auto"
-                  >
-                    <Sparkles className="h-4 w-4" />
-                    Gerar Plano Alimentar
-                  </button>
-                </div>
-
-                {/* Histórico de planos salvos em ordem cronológica decrescente */}
-                {planos.length === 0 ? (
-                  <div className="py-16 text-center">
-                    <FileText className="h-12 w-12 text-slate-300 mx-auto mb-3" />
-                    <h4 className="text-base font-bold text-slate-800">
-                      Nenhum plano alimentar gerado ainda
-                    </h4>
-                    <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-                      Assim que você gerar o primeiro plano com base nas preferências e histórico do paciente, ele aparecerá listado aqui.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {planos.map((plano) => (
-                        <div
-                          key={plano.id}
-                          onClick={() => setPlanoSelecionado(plano)}
-                          className={`p-4 rounded-xl border transition-all cursor-pointer ${
-                            planoSelecionado?.id === plano.id
-                              ? "border-emerald-500 bg-emerald-50/50 shadow-sm"
-                              : "border-slate-200 hover:border-emerald-300 hover:bg-slate-50"
-                          }`}
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-xs font-bold text-emerald-700">Plano Salvo</span>
-                            <span className="text-[11px] text-slate-400">
-                              {formatSafeDate(plano.created_at)}
-                            </span>
-                          </div>
-                          <p className="text-xs text-slate-600 line-clamp-2">
-                            {typeof plano.conteudo === "string"
-                              ? plano.conteudo
-                              : JSON.stringify(plano.conteudo)}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Exibição completa do plano selecionado */}
-                    {planoSelecionado && (
-                      <div className="mt-6 p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
-                        <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                          <h4 className="text-sm font-bold text-slate-800">
-                            Conteúdo do Plano • {formatSafeDate(planoSelecionado.created_at)}
-                          </h4>
-                          <button
-                            type="button"
-                            onClick={() => setPlanoSelecionado(null)}
-                            className="text-xs text-slate-400 hover:text-slate-600"
-                          >
-                            Fechar
-                          </button>
-                        </div>
-                        <pre className="text-xs text-slate-700 whitespace-pre-wrap font-sans bg-white p-4 rounded-xl border border-slate-200 overflow-x-auto max-h-96">
-                          {typeof planoSelecionado.conteudo === "string"
-                            ? planoSelecionado.conteudo
-                            : JSON.stringify(planoSelecionado.conteudo, null, 2)}
-                        </pre>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
+              <PlanosAlimentaresSection
+                paciente={paciente}
+                planos={planos}
+                onPlanoSalvo={(novoPlano) => {
+                  setPlanos((prev) => [novoPlano, ...prev]);
+                }}
+              />
             )}
           </div>
         )}
