@@ -168,9 +168,9 @@ export const PlanosAlimentaresSection: React.FC<PlanosAlimentaresSectionProps> =
       observacoes_clinicas: paciente?.observacoes,
     };
 
-    // Controller para timeout de 45 segundos
+    // Timeout de 75 segundos para evitar abort prematuro de geração complexa
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 45000);
+    const timeoutId = setTimeout(() => controller.abort(), 75000);
 
     try {
       const response = await fetch('/api/gerar-plano', {

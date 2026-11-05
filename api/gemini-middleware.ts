@@ -85,7 +85,12 @@ O formato do JSON retornado deve seguir exatamente esta estrutura:
 }`;
 
           // Tenta primeiramente gemini-3.8-flash; se indisponível (503/404), usa gemini-3.5-flash com resiliência
-          const modelsToTry = ['gemini-3.8-flash', 'gemini-3.5-flash'];
+          const modelsToTry = [
+            'gemini-2.5-flash',
+            'gemini-1.5-flash',
+            'gemini-1.5-flash-8b',
+            'gemini-2.0-flash',
+          ];
           let rawText = '';
           let lastError: any = null;
 
